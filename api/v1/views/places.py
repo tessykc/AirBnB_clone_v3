@@ -5,14 +5,15 @@ Routes for handling places objects and operations.
 from flask import jsonify, abort, request
 from api.v1.views import app_views, storage
 from models.place import Place
+from models import storage, Place, State, City, Amenity
 
 
 @app_views.route("/cities/<city_id>/places", methods=["GET"],
                  strict_slashes=False)
 def places_by_city(city_id):
   """
-  Retrieves all place objects by city
-  :return: json of all places
+  Retrieves all place objects by city:
+  return: json of all places
   """
   place_list = []
   city_obj = storage.get("City", str(city_id))
@@ -109,7 +110,53 @@ def place_delete_by_id(place_id):
   if fetched_obj is None:
     abort(404)
 
-  storage.delete(fetched_obj)
-  storage.save()
+    storage.delete(fetched_obj)
+    storage.save()
+    return jsonify({})
 
-  return jsonify({})
+
+@app_views.route('/api/v1/places_search', methods=['POST'])
+def search_places():
+    """Check if request body is JSON"""
+    if not request.is_json:
+        return jsonify({"error": "Not a JSON"}), 400
+
+    """Parse JSON from request body"""
+    data = request.get_json()
+
+    """Retrieve list of states, cities, and amenities from JSON"""
+    states = data.get('states', [])
+    cities = data.get('cities', [])
+    amenities = data.get('amenities', [])
+
+    """If all lists are empty, retrieve all Place objects"""
+    if not states and not cities and not amenities:
+        places = storage.all(Place).values()
+        return jsonify([place.to_dict() for place in places])
+
+    """Retrieve places based on states and cities"""
+    place_ids = set()
+    for state_id in states:
+        state = storage.get(State, state_id)
+        if state:
+            for city in state.cities:
+                place_ids.update(place.id for place in city.places)
+    for city_id in cities:
+        city = storage.get(City, city_id)
+        if city:
+            place_ids.update(place.id for place in city.places)
+
+    """Filter places based on amenities"""
+    if amenities:
+        filtered_place_ids = set()
+        for place_id in place_ids:
+            place = storage.get(Place, place_id)
+            if place and all(amenity_id in place.amenities
+                             for amenity_id in amenities):
+                filtered_place_ids.add(place_id)
+        place_ids = filtered_place_ids
+
+    """Retrieve places from filtered place IDs"""
+    places = [storage.get(Place, place_id).to_dict() for place_id in place_ids]
+
+    return jsonify(places)
