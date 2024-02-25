@@ -7,3 +7,5 @@ from os import getenv
 
 from api.v1.views import app_views, storage
 
+
+@app_views.route("places/<place_id>/amenities"
