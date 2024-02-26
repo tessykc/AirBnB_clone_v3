@@ -11,35 +11,34 @@ from models import storage
 A variable app
 """
 app = Flask(__name__)
+
+CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
+
+
 app.register_blueprint(app_views)
-cors = CORS(app, resources={"/*": {"origins": "0.0.0.0"}})
-
-
-@app.teardown_appcontext
-def teardown_appcontext(code):
-    """teardown_appcontext"""
-    storage.close()
 
 
 @app.teardown_appcontext
 def teardown(exception):
     """
-    Teardown functions
+    teardown_appcontext
     """
     storage.close()
 
 
 @app.errorhandler(404)
-def page_not_found(error):
-    '''return render_template'''
-    return jsonify(error='Not found'), 404
+def handle_404(exception):
+    """
+    Teardown functions
+    """
+    data = [
+        "error": returns 404 json
+    }
+    
+    resp = jsonify(data)
+    resp.status_code = 404
 
+    return(resp)
 
-if __name__ == "__main__":
-    host = getenv('HBNB_API_HOST')
-    port = getenv('HBNB_API_PORT')
-    if not host:
-        host = '0.0.0.0'
-    if not port:
-        port = '5000'
-    app.run(host=host, port=port, threaded=True)
+    if __name__ == "__main__":
+        app.run(getenv("HBNB_API_HOST"), getenv("HBNB_API_PORT"))
