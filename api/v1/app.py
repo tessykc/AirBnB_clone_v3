@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
 """app.py to connect to API"""
-from flask import Flask, jsonify, make_response
+
+from flask import Flask, jsonify
 from flask_cors import CORS
 from os import getenv
 from api.v1.views import app_views
