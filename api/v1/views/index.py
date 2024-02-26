@@ -4,11 +4,8 @@
 Returns a JSON
 """
 from api.v1.views import app_views
-<<<<<<< HEAD
 from flask import jsonify
-=======
 from flask import Flask, Blueprint, jsonify
->>>>>>> master
 
 
 """Define a route /status on the app_views Blueprint"""
@@ -17,7 +14,6 @@ def status():
     """A route that returns a JSON"""
     return jsonify({"status": "OK"})
 
-<<<<<<< HEAD
 
 @app_views.route('/stats', methods=['GET'])
 def stats():
@@ -37,7 +33,7 @@ def stats():
         for key, value in PLURALS.items():
             response[value] = storage.count(key)
         return jsonify(response)
-=======
+
 stats_blueprint = Blueprint('stats', __name__, url_prefix='/api/v1')
 
 
@@ -53,4 +49,4 @@ def get_stats():
         'users' : storage.count('Users'),
     }
     return jsonify(counts), 200
->>>>>>> master
+
