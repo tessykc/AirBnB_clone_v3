@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 """states.py"""
 
-from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 from models import storage
 from models.state import State
+from api.v1.views import app_views
 
 
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
@@ -35,7 +35,7 @@ def delete_state(state_id):
         abort(404)
     state.delete()
     storage.save()
-    return (jsonify({}))
+    return make_response(jsonify({}), 200)
 
 
 @app_views.route('/states/', methods=['POST'], strict_slashes=False)
