@@ -10,6 +10,7 @@ import sqlalchemy
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 import uuid
+import hashlib
 
 time = "%Y-%m-%dT%H:%M:%S.%f"
 
@@ -58,17 +59,31 @@ class BaseModel:
         models.storage.new(self)
         models.storage.save()
 
-    def to_dict(self):
-        """returns a dictionary containing all keys/values of the instance"""
+    def to_dict(self, include_password=False, time="%Y-%m-%dT%H:%M:%S.%f"):
+        """Returns a dictionary containing all keys/values of the instance"""
         new_dict = self.__dict__.copy()
+        
         if "created_at" in new_dict:
             new_dict["created_at"] = new_dict["created_at"].strftime(time)
         if "updated_at" in new_dict:
             new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
+        
         new_dict["__class__"] = self.__class__.__name__
+        
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
-        return new_dict
+            return new_dict
+        
+        dict_representation = {}
+        for key, value in self.__dict__.items():
+            """Exclude private attributes and methods"""
+            if not key.startswith('_') and not callable(value):
+                dict_representation[key] = value
+        
+        if not include_password and 'password' in dict_representation:
+            """Hash the password if it exists and is not included"""
+            dict_representation['password'] = hashlib.md5(dict_representation['password'].encode()).hexdigest()
+        return dict_representation
 
     def delete(self):
         """delete the current instance from the storage"""
