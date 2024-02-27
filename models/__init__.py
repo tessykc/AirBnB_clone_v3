@@ -1,21 +1,24 @@
-import os
-from models.base_model import BaseModel
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
-from models.user import User
+#!/usr/bin/python3
+""" holds class Amenity"""
+import models
+from models.base_model import BaseModel, Base
+from os import getenv
+import sqlalchemy
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
 
-"""CNC - dictionary = { Class Name (string) : Class Type }"""
 
-if os.environ.get('HBNB_TYPE_STORAGE') == 'db':
-    from models.engine import db_storage
-    CNC = db_storage.DBStorage.CNC
-    storage = db_storage.DBStorage()
-else:
-    from models.engine import file_storage
-    CNC = file_storage.FileStorage.CNC
-    storage = file_storage.FileStorage()
+class Amenity(BaseModel, Base):
+    """Representation of Amenity """
+    if models.storage_t == 'db':
+        __tablename__ = 'amenities'
+        name = Column(String(128), nullable=False)
+        place_amenities = relationship("Place", secondary="place_amenity",
+                                       back_populates="amenities",
+                                       viewonly=False)
+    else:
+        name = ""
 
-storage.reload()
+    def __init__(self, *args, **kwargs):
+        """initializes Amenity"""
+        super().__init__(*args, **kwargs)
