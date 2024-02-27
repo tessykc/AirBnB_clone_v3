@@ -131,6 +131,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertTrue(storage.get(cls=State, id=state.id) is not None)
 
 
+      @unittest.skipIf(models.storage_t == 'db', "not testing file storage")     
     def test_get_method_without_id(self):
         """Test get method without id"""
         state = State(name="California")
