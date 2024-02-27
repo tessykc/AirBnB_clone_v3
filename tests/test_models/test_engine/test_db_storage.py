@@ -88,22 +88,19 @@ class TestFileStorage(unittest.TestCase):
         """Test that save properly saves objects to file.json"""
     
     
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_get_method(self):
+   def test_get_method(self):
         """Test get method"""
         state = State(name="California")
         state.save()
         self.assertTrue(storage.get(cls=State, id=state.id) is not None)
 
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_get_method_without_id(self):
         """Test get method without id"""
         with self.assertRaises(TypeError):
             self.assertTrue(storage.get(cls=State) is not None)
 
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_count_method(self):
         """Test count method"""
         state = State(name="California")
