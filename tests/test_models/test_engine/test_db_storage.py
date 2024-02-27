@@ -88,7 +88,7 @@ class TestFileStorage(unittest.TestCase):
         """Test that save properly saves objects to file.json"""
     
     
-   def test_get_method(self):
+    def test_get_method(self):
         """Test get method"""
         state = State(name="California")
         state.save()
