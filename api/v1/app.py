@@ -25,12 +25,12 @@ def teardown_appcontext(code):
     storage.close()
 
 
-@app.teardown_appcontext
-def teardown(exception):
-    """
-    Teardown functions
-    """
-    storage.close()
+#@app.teardown_appcontext
+#def teardown(exception):
+ #   """
+  #  Teardown functions
+   # """
+    #storage.close()
 
 
 @app.errorhandler(404)
