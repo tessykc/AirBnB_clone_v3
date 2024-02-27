@@ -3,48 +3,30 @@
 """
 Returns a JSON
 """
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
 from api.v1.views import app_views
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 from models import storage
 
-stats_blueprint = Blueprint('stats', __name__, url_prefix='/api/v1')
-
-
-"""Define a route /status on the app_views Blueprint"""
-@app_views.route('/status', methods=['GET'])
-def get_status():
-    """A route that returns a JSON"""
+@app_views.route('/status', strict_slashes=False)
+def status():
+    """ Returns the HTTP status """
     return jsonify({"status": "OK"})
 
 
-@stats_blueprint.route('/stats', methods=['GET'])
-def get_stats():
-    """Retrieve counts of each object type"""
-    stats = {
-        'amenities': storage.count('Amenities'),
-        'cities': storage.count('Cities'),
-        'places': storage.count('Places'),
-        'reviews': storage.count('Reviews'),
-        'states': storage.count('States'),
-        'users' : storage.count('Users'),
-    }
-    return jsonify(stats)
-
-
-@app_views.route('/stats', methods=['GET'])
+@app_views.route('/stats', methods=['GET'], strict_slashes=False)
 def stats():
-   """
-   function to return the count of all class objects
-   """
-   response = {}
-   PLURALS = {
-      "Amenity": "amenities",
-      "City": "cities",
-      "Place": "places",
-      "Review": "reviews",
-      "State": "states",
-      "User": "users"
-      }
-   for key, value in PLURALS.items():
-    response[value] = storage.count(key)
-    return jsonify(response)
+    """ Returns the number of each instance type """
+    classes = [Amenity, City, Place, Review, State, User]
+    names = ["amenities", "cities", "places", "reviews", "states", "users"]
+
+    num_objs = {}
+    for i in range(len(classes)):
+        num_objs[names[i]] = storage.count(classes[i])
+
+    return jsonify(num_objs)
