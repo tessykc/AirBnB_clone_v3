@@ -13,7 +13,6 @@ app = Flask(__name__)
 app.register_blueprint(app_views)
 
 
-
 """Enable CORS for all routes"""
 CORS(app, resources={r"/api/*": {"origins": "0.0.0.0"}})
 
@@ -34,5 +33,3 @@ if __name__ == "__main__":
     host = os.getenv('HBNB_API_HOST', '0.0.0.0')
     port = int(os.getenv('HBNB_API_PORT', 5000))
     app.run(host=host, port=port, threaded=True)
-
-

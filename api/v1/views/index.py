@@ -7,6 +7,7 @@ from api.v1.views import app_views
 from flask import jsonify
 from models import storage_t
 
+
 @app_views.route('/status', methods=['GET'])
 def get_status():
     """Returns a JSON"""
