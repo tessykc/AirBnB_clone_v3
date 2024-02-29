@@ -21,9 +21,8 @@ class Amenity(BaseModel, Base):
                                        viewonly=False)
     else:
         name = ""
-    
-    
-    def __init__(self, *args, **kwargs):
+
+
+def __init__(self, *args, **kwargs):
         """initializes Amenity"""
         super().__init__(*args, **kwargs)
-1
