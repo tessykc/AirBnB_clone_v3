@@ -40,7 +40,7 @@ class TestConsoleDocs(unittest.TestCase):
                          "HBNBCommand class needs a docstring")
         self.assertTrue(len(HBNBCommand.__doc__) >= 1,
                         "HBNBCommand class needs a docstring")
-    
+
     def test_amenity_class_import(self):
         """Test importing Amenity class from models.amenity"""
         self.assertTrue(inspect.isclass(Amenity),
