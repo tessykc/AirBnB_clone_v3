@@ -70,18 +70,17 @@ class FileStorage:
         self.reload()
 
     def get(self, cls, id):
-        """Returns the object based on the class and its ID,
-        or None if not found"""
-        for clss in classes:
-            if cls is not None and id is not None or cls is classes[clss]\
-               and id is not None or cls is clss and id is not None:
-                for value in self.__objects.values():
-                    if cls == value.__class__ or\
-                       cls == value.__class__.__name__:
-                        if id == value.id:
-                            return (value)
-                        else:
-                            return None
+         """Returns the object based on the class and its ID, or None if not found"""
+         for key, value in self.__objects.items():
+              """ Check if the class name matches the desired class"""
+              if value.__class__.__name__ == cls.__name__:
+                   """ Check if the ID matches"""
+                   if value.id == id:
+                        return value
+                   """If not found, return None"""
+                   return None
+              else:
+                  return None
 
     def count(self, cls=None):
         """Returns the number of objects in storage matching the given class.
